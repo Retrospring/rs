@@ -138,7 +138,7 @@ Rails.application.config.active_record.query_log_tags_format = :sqlcommenter
 # servers, first deploy without changing the serializer, then set the serializer
 # in a subsequent deploy.
 #++
-# Rails.application.config.active_support.message_serializer = :json_allow_marshal
+Rails.application.config.active_support.message_serializer = :message_pack_allow_marshal
 
 ###
 # Enable a performance optimization that serializes message data and metadata
@@ -159,9 +159,9 @@ Rails.application.config.active_record.query_log_tags_format = :sqlcommenter
 # `config.load_defaults 7.1` does not set this value for environments other than
 # development and test.
 #++
-# if Rails.env.local?
-#   Rails.application.config.log_file_size = 100 * 1024 * 1024
-# end
+if Rails.env.local?
+  Rails.application.config.log_file_size = 100 * 1024 * 1024
+end
 
 ###
 # Enable raising on assignment to attr_readonly attributes. The previous
