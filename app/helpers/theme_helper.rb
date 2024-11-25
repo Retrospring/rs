@@ -28,11 +28,7 @@ module ThemeHelper
     "muted_text"         => "muted-text",
   }.freeze
 
-  def render_theme
-    theme = get_active_theme
-
-    return unless theme
-
+  def get_theme_css(theme)
     body = ":root {\n"
 
     theme.attributes.each do |k, v|
@@ -42,9 +38,7 @@ module ThemeHelper
         body += "\t--#{var}: #{get_color_for_key(var, v)};\n"
       end
     end
-    body += "\t--turbolinks-progress-color: ##{lighten(theme.primary_color)}\n}"
-
-    content_tag(:style, body)
+    body + "\t--turbolinks-progress-color: ##{lighten(theme.primary_color)}\n}"
   end
 
   def get_color_for_key(key, color)
@@ -58,7 +52,7 @@ module ThemeHelper
   end
 
   def theme_color
-    theme = get_active_theme
+    theme = active_theme_user&.theme
     if theme
       theme.theme_color
     else
@@ -67,7 +61,7 @@ module ThemeHelper
   end
 
   def mobile_theme_color
-    theme = get_active_theme
+    theme = active_theme_user&.theme
     if theme
       theme.mobile_theme_color
     else
@@ -75,31 +69,17 @@ module ThemeHelper
     end
   end
 
-  def get_active_theme
-    if @user&.theme
-      if user_signed_in?
-        if current_user&.show_foreign_themes?
-          @user.theme
-        else
-          current_user&.theme
-        end
-      else
-        @user.theme
-      end
-    elsif @answer&.user&.theme
-      if user_signed_in?
-        if current_user&.show_foreign_themes?
-          @answer.user.theme
-        else
-          current_user&.theme
-        end
-      else
-        @answer.user.theme
-      end
-    elsif current_user&.theme
-      current_user.theme
+  def active_theme_user
+    user = @user || @answer&.user # rubocop:disable Rails/HelperInstanceVariable
+
+    if user&.theme.present? && should_show_foreign_theme?
+      user
+    elsif user_signed_in?
+      current_user
     end
   end
+
+  def should_show_foreign_theme? = current_user&.show_foreign_themes || !user_signed_in?
 
   def get_hex_color_from_theme_value(value)
     "0000000#{value.to_s(16)}"[-6, 6]

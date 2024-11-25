@@ -3,33 +3,6 @@
 require "rails_helper"
 
 describe ThemeHelper, type: :helper do
-  describe "#render_theme" do
-    context "when target page doesn't have a theme" do
-      it "returns no theme" do
-        expect(helper.render_theme).to be_nil
-      end
-    end
-
-    context "when target page has a theme" do
-      before(:each) do
-        @user = FactoryBot.create(:user)
-        @user.theme = Theme.new
-        @user.save!
-      end
-
-      it "returns a theme" do
-        expect(helper.render_theme).to include("<style>:root {")
-      end
-
-      it "contains correct theme background colors" do
-        expect(helper.render_theme).to include("--primary: #5e35b1;")
-      end
-
-      it "properly converts color values for *-text theme attributes" do
-        expect(helper.render_theme).to include("--primary-text: 255, 255, 255;")
-      end
-    end
-  end
 
   describe "#get_hex_color_from_theme_value" do
     it "returns the proper hex value from the decimal value for white" do
@@ -51,11 +24,11 @@ describe ThemeHelper, type: :helper do
     end
   end
 
-  describe "#get_active_theme" do
+  describe "#active_theme_user" do
     context "when user is a guest" do
       context "when target page doesn't have a theme" do
-        it "returns no theme" do
-          expect(helper.get_active_theme).to be_nil
+        it "returns no user" do
+          expect(helper.active_theme_user).to be_nil
         end
       end
 
@@ -67,7 +40,7 @@ describe ThemeHelper, type: :helper do
         end
 
         it "returns a theme" do
-          expect(helper.get_active_theme).to be_a(Theme)
+          expect(helper.active_theme_user).to be_a(User)
         end
       end
 
@@ -78,8 +51,8 @@ describe ThemeHelper, type: :helper do
           @answer.user.save!
         end
 
-        it "returns a theme" do
-          expect(helper.get_active_theme).to be_a(Theme)
+        it "returns a user" do
+          expect(helper.active_theme_user).to be_a(User)
         end
       end
     end
@@ -90,13 +63,7 @@ describe ThemeHelper, type: :helper do
       before(:each) { sign_in(user) }
 
       context "when user has no theme" do
-        context "when target page has no theme" do
-          it "returns no theme" do
-            expect(helper.get_active_theme).to be_nil
-          end
-        end
-
-        context "when target page has a theme" do
+        context "when target page has a corresponding user" do
           let(:theme) { Theme.new }
 
           before(:each) do
@@ -106,11 +73,11 @@ describe ThemeHelper, type: :helper do
           end
 
           it "returns a theme" do
-            expect(helper.get_active_theme).to be(theme)
+            expect(helper.active_theme_user).to be(@user)
           end
         end
 
-        context "when target answer's user has a theme" do
+        context "when target page has contains an answer" do
           let(:theme) { Theme.new }
 
           before(:each) do
@@ -120,7 +87,7 @@ describe ThemeHelper, type: :helper do
           end
 
           it "returns a theme" do
-            expect(helper.get_active_theme).to be(theme)
+            expect(helper.active_theme_user).to be(@answer.user)
           end
         end
       end
@@ -136,7 +103,7 @@ describe ThemeHelper, type: :helper do
 
         context "when target page has no theme" do
           it "returns the theme of the current user" do
-            expect(helper.get_active_theme).to eq(theme)
+            expect(helper.active_theme_user).to eq(user)
           end
         end
 
@@ -150,7 +117,7 @@ describe ThemeHelper, type: :helper do
           end
 
           it "returns the theme of the current page" do
-            expect(helper.get_active_theme).to eq(user_theme)
+            expect(helper.active_theme_user).to eq(@user)
           end
 
           context "when user doesn't allow foreign themes" do
@@ -160,7 +127,7 @@ describe ThemeHelper, type: :helper do
             end
 
             it "should return the users theme" do
-              expect(helper.get_active_theme).to eq(theme)
+              expect(helper.active_theme_user).to eq(user)
             end
           end
         end
@@ -175,7 +142,7 @@ describe ThemeHelper, type: :helper do
           end
 
           it "returns the theme of the current page" do
-            expect(helper.get_active_theme).to eq(answer_theme)
+            expect(helper.active_theme_user).to eq(@answer.user)
           end
 
           context "when user doesn't allow foreign themes" do
@@ -185,7 +152,7 @@ describe ThemeHelper, type: :helper do
             end
 
             it "should return the users theme" do
-              expect(helper.get_active_theme).to eq(theme)
+              expect(helper.active_theme_user).to eq(user)
             end
           end
         end

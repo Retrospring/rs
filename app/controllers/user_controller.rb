@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 class UserController < ApplicationController
+  include ThemeHelper
   include PaginatesAnswers
 
-  before_action :set_user
+  before_action :set_user, except: :show_theme
   before_action :hidden_social_graph_redirect, only: %i[followers followings]
   after_action :mark_notification_as_read, only: %i[show]
 
   def show
+    return show_theme if params[:format] == "css"
+
     @pinned_answers = @user.answers.for_user(current_user).pinned.includes([{ user: :profile }, :question]).order(pinned_at: :desc).limit(10).load_async
     paginate_answers { |args| @user.cursored_answers(current_user_id: current_user, **args) }
 
@@ -15,6 +18,16 @@ class UserController < ApplicationController
       format.html
       format.turbo_stream { render layout: false }
     end
+  end
+
+  def show_theme
+    theme = Theme.where(user: User.where("LOWER(screen_name) = ?", params[:username].downcase).select(:id)).first
+    return head :no_content unless theme
+
+    expires_in 3.months
+    return if fresh_when theme, public: true
+
+    render plain: get_theme_css(theme), content_type: "text/css"
   end
 
   def followers

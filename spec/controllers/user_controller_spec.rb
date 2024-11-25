@@ -65,6 +65,58 @@ describe UserController, type: :controller do
     end
   end
 
+  describe "#show_theme" do
+    subject { get :show, params: { username: user.screen_name }, format: :css }
+
+    context "user does not have a theme set" do
+      it "returns no content" do
+        expect(subject).to have_http_status(:no_content)
+        expect(response.body).to be_empty
+      end
+    end
+
+    context "user has theme" do
+      let!(:theme) { FactoryBot.create(:theme, user:) }
+
+      it "returns theme CSS" do
+        subject
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq(<<~CSS.chomp)
+:root {
+	--primary: #8e8cd8;
+	--primary-rgb: 142, 140, 216;
+	--primary-text: 255, 255, 255;
+	--danger: #d98b8b;
+	--danger-text: 255, 255, 255;
+	--success: #bfd98b;
+	--success-text: 255, 255, 255;
+	--warning: #d99e8b;
+	--warning-text: 255, 255, 255;
+	--info: #8bd9d9;
+	--info-text: 255, 255, 255;
+	--dark: #666666;
+	--dark-text: 238, 238, 238;
+	--raised-bg: #ffffff;
+	--raised-bg-rgb: 255, 255, 255;
+	--background: #c6c5eb;
+	--body-text: 51, 51, 51;
+	--muted-text: 51, 51, 51;
+	--input-bg: #f0edf4;
+	--input-text: 102, 102, 102;
+	--raised-accent: #f7f7f7;
+	--raised-accent-rgb: 247, 247, 247;
+	--light: #f8f9fa;
+	--light-text: 0, 0, 0;
+	--input-placeholder: 108, 117, 125;
+	--raised-text: 51, 51, 51;
+	--raised-accent-text: 51, 51, 51;
+	--turbolinks-progress-color: #ceccff
+}
+        CSS
+      end
+    end
+  end
+
   describe "#followers" do
     subject { get :followers, params: { username: user.screen_name } }
 

@@ -5,20 +5,22 @@
     %meta{ 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
     %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover' }
     - if user_signed_in?
-      %meta{ name: 'theme-color', content: theme_color, media: '(min-width: 993px)' }
-      %meta{ name: 'theme-color', content: mobile_theme_color, media: '(max-width: 992px)' }
+      %meta{ name: "theme-color", content: "var(--primary)", media: "(min-width: 993px)" }
+      %meta{ name: "theme-color", content: "var(--background)", media: "(max-width: 992px)" }
     - else
-      %meta{ name: 'theme-color', content: theme_color }
+      %meta{ name: "theme-color", content: "var(--primary)" }
     - if @user&.privacy_noindex? || @answer&.user&.privacy_noindex? || @question&.user&.privacy_noindex?
       %meta{ name: 'robots', content: 'noindex' }
     %link{ rel: 'manifest', href: '/manifest.json', crossorigin: 'use-credentials' }
     %link{ rel: 'apple-touch-icon', href: '/icons/maskable_icon_x192.png' }
-    %link{ rel: 'mask-icon', href: '/icons/icon.svg', color: theme_color }
+    %link{ rel: 'mask-icon', href: '/icons/icon.svg', color: "#5e35b1" }
     %link{ rel: 'icon', href: '/images/favicon/favicon-16.png', sizes: '16x16' }
     %link{ rel: 'icon', href: '/icons/maskable_icon_x192.png', sizes: '192x192' }
     %link{ rel: 'icon', href: '/images/favicon/favicon-32.png', sizes: '32x32' }
     %title= yield(:title)
     = stylesheet_link_tag "application", data: { 'turbo-track': "reload" }, media: "all"
+    - if active_theme_user.present?
+      %link{ rel: "stylesheet", href: user_path(username: active_theme_user.screen_name, format: "css"), data: { turbo_track: "reload" } }
     = javascript_include_tag 'application', data: { 'turbo-track': 'reload' }, defer: true
     = csrf_meta_tags
     = yield(:og)
@@ -46,4 +48,3 @@
               = `git rev-parse --short HEAD`.strip
           %p.text-danger Debug params:
           = debug params
-    = render_theme
