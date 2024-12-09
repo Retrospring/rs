@@ -104,7 +104,7 @@ jobs:
           yarn install --frozen-lockfile
         if: steps.changed-files.outputs.any_changed == 'true'
       - name: stylelint
-        uses: reviewdog/action-stylelint@v1.29.0
+        uses: reviewdog/action-stylelint@v1.30.0
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-check
