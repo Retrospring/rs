@@ -318,7 +318,7 @@ GEM
     oj (3.16.7)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
-    openssl (3.2.0)
+    openssl (3.3.0)
     orm_adapter (0.5.0)
     os (1.1.4)
     ostruct (0.6.0)
@@ -599,7 +599,7 @@ DEPENDENCIES
   net-pop
   net-smtp
   oj
-  openssl (~> 3.2)
+  openssl (~> 3.3)
   pg
   pghero
   prometheus-client (~> 4.2)
