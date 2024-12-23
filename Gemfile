@@ -115,7 +115,7 @@ gem "pundit", "~> 2.4"
 gem "rubyzip", "~> 2.3"
 
 # to solve https://github.com/jwt/ruby-jwt/issues/526
-gem "openssl", "~> 3.2"
+gem "openssl", "~> 3.3"
 
 # mail 2.8.0 breaks sendmail usage: https://github.com/mikel/mail/issues/1538
 gem "mail", "~> 2.7.1"
