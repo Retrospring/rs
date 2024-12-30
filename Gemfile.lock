@@ -247,7 +247,7 @@ GEM
     json (2.8.2)
     json-schema (5.1.0)
       addressable (~> 2.8)
-    jwt (2.9.3)
+    jwt (2.10.1)
       base64
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
@@ -590,7 +590,7 @@ DEPENDENCIES
   i18n-js (= 4.0)
   jsbundling-rails (~> 1.3)
   json-schema
-  jwt (~> 2.9)
+  jwt (~> 2.10)
   letter_opener
   lograge
   mail (~> 2.7.1)
