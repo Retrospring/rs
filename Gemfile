@@ -112,7 +112,7 @@ gem "net-smtp"
 
 gem "pundit", "~> 2.4"
 
-gem "rubyzip", "~> 2.3"
+gem "rubyzip", "~> 2.4"
 
 # to solve https://github.com/jwt/ruby-jwt/issues/526
 gem "openssl", "~> 3.2"
