@@ -40,7 +40,7 @@ gem "web-push"
 
 gem "rolify", "~> 6.0"
 
-gem "dry-initializer", "~> 3.1"
+gem "dry-initializer", "~> 3.2"
 gem "dry-types", "~> 1.7"
 
 gem "pghero"
